@@ -4,7 +4,7 @@ import pandas.io.data
 from pandas import Series, DataFrame
 from sklearn import preprocessing
 
-def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors):
+def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors, noiseStDev):
     # Generate data for a target time series that's driven by randomly
     # selected stocks. 
 
@@ -18,6 +18,7 @@ def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors):
     # maxJ = maximum number of time series to use
     # maxSummands = maximum number of summands to use
     # maxFactors = for each summand, the maximum number of factors
+    # noiseStDev = standard deviation of the Gaussian noise with mean zero
 
     ## Select the number of stocks to use
     J = np.random.choice(range(1, len(sd.columns)+1))
@@ -68,5 +69,6 @@ def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors):
         dd[maxLag:,-1] += ss
         if m < M-1:
             outString += " + "
-    print outString
+    dd[maxLag:,-1] += noiseStDev * np.random.randn(numDataPts)
+    print outString + " + error(t)"
     return dd
