@@ -20,6 +20,11 @@ def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors, noiseStDev):
     # maxFactors = for each summand, the maximum number of factors
     # noiseStDev = standard deviation of the Gaussian noise with mean zero
 
+    ## Normalize the stock data
+    sdNorm = np.zeros([numDataPts+maxLag, len(sd.columns)])
+    sdNorm[:,:] = sd.iloc[-(numDataPts+maxLag):,:]
+    sdNorm = preprocessing.scale(sdNorm,axis=0,with_mean=True,with_std=True)
+
     ## Select the number of stocks to use
     J = np.random.choice(range(1, len(sd.columns)+1))
     ## Select the stocks
@@ -28,8 +33,7 @@ def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors, noiseStDev):
     ## Get the stock data and put it into the data array dd; the last column
     ## is reserved for the generated time series
     dd = np.zeros([numDataPts+maxLag, J+1])
-    dd[:,:-1] = sd.iloc[-(numDataPts+maxLag):,selectedStocks]
-    dd = preprocessing.scale(dd,axis=0,with_mean=True,with_std=True)
+    dd[:,:-1] = sdNorm[:,selectedStocks]
     
     ## Select the number of summands to use
     M = np.random.choice(range(1, maxSummands+1))
@@ -71,4 +75,4 @@ def generateSeries(sd, numDataPts, maxLag, maxSummands, maxFactors, noiseStDev):
             outString += " + "
     dd[maxLag:,-1] += noiseStDev * np.random.randn(numDataPts)
     print outString + " + error(t)"
-    return dd
+    return np.column_stack((sdNorm, dd[:,-1]))
