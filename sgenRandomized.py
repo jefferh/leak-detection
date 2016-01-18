@@ -5,7 +5,7 @@ from pandas import Series, DataFrame
 from sklearn import preprocessing
 
 def getStockData(n):
-    # Read stock closing prices for the past n days into a DataFrame
+    # Read stock closing prices for the past n days into a DataFrame.
     stocks = ['AAPL', 'GOOGL', 'YHOO', 'IBM', 'AXP', 'BAC', 'MSFT','INTC','CSCO','AMZN']
     return pd.io.data.get_data_yahoo(stocks, '7/1/2005')['Close'][-n:]
     
@@ -29,8 +29,9 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
     # Outputs:
     # D = array where the leading columns contain the scaled
     # stock data, and the remaining columns contain the generated time series data
-    # dep = array whose i-th row contains the indices of the stocks used to  
-    # generate the i-th time series
+    # dep = array whose ij-th element is a tuple (k, l) where k is the index of a 
+    # stock that was used to generate the i-th series, and l indicates the lag 
+    # that was used
     # funcs = list whose i-th element contains a string that describes the system 
     # equation (e.g. y(t) = x(t) + error(t)) used to generate the i-th time series
 
@@ -58,6 +59,7 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
         M = np.random.choice(range(1, maxSummands+1))
         ## Generate the data for the target series
         outString = "y(t) = "
+        currentDep = []
         for m in range(M):
             # Select the number of factors to use for the current summand
             N = np.random.choice(range(1, maxFactors+1))
@@ -72,6 +74,7 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
                 j = np.random.choice(range(J))
                 # Select the lag
                 l = np.random.choice(range(1, maxLag+1))
+                currentDep.append((selectedStocks[j], l))
                 # Select the transformation
                 f = np.random.choice(range(5))
                 if f==0:
@@ -97,6 +100,6 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
         outString += " + error(t)"
         print outString
         D = np.column_stack((D, dd[:,-1]))
-        dep.append(selectedStocks)
+        dep.append(currentDep)
         funcs.append(outString)
     return (D, dep, funcs)
