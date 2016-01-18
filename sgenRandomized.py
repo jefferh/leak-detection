@@ -100,6 +100,8 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
         outString += " + error(t)"
         print outString
         D = np.column_stack((D, dd[:,-1]))
+        currentDep = list(set(currentDep))
+        currentDep.sort()
         dep.append(currentDep)
         funcs.append(outString)
     return (D, dep, funcs)
