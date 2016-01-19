@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from sklearn import preprocessing, linear_model, ensemble
 # import GPy as gp
 import sgenRandomized as sgr
