@@ -28,9 +28,9 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
 
     # Outputs:
     # scaledStocks = array containing the scaled stock data
-    # targets = array where each column corresponds to a generated time series
+    # outSeries = array where each column corresponds to a generated time series
     # dep = array whose ij-th element is a tuple (k, l) where k is the index of a 
-    # stock that was used to generate the i-th series, and l indicates the lag 
+    # stock that was used to generate the i-th series, and l is the lag 
     # that was used
     # funcs = list whose i-th element contains a string that describes the system 
     # equation (e.g. y(t) = x(t) + error(t)) used to generate the i-th time series
@@ -104,5 +104,5 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
         currentDep.sort()
         dep.append(currentDep)
         funcs.append(outString)
-    targets = D[:,len(sd.columns):]
-    return (scaledStocks, targets, dep, funcs)
+    outSeries = D[:,len(sd.columns):]
+    return (scaledStocks, outSeries, dep, funcs)
