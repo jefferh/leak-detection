@@ -50,6 +50,7 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
     else:
         numOutSeries = len(outSeries[0])
     for series in range(numOutSeries):
+        # Format the data for the methods
         if numOutSeries==1:
             y = outSeries[maxLag:]
         else:
@@ -57,9 +58,26 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
         X = genRegInput(inSeries, maxLag)
         X_scaled = preprocessing.scale(X)
         coefs = np.empty([numInSeries, maxLag])
+        # Fit a model with one of the methods
         if method=='lassocv':
             lasso = linear_model.LassoCV(max_iter=10000)
             lasso.fit(X_scaled, y)
             for i in range(numInSeries):
                 coefs[i,:] = lasso.coef_[i*maxLag:(i+1)*maxLag]
-    return (X, X_scaled, y, coefs)
+        # Get the maximal coefficient, and the corresponding lag, for each input 
+        # series
+        maxCoefs = np.zeros(numInSeries)
+        maxLags = np.zeros(numInSeries)
+        for j in range(numInSeries):
+            maxCoefs[j] = np.amax(coefs[j,:])
+            maxLags[j] = np.argsort(coefs[j,:])[-1] + 1
+        # Compute the "importance score" for each input series
+        scores = np.zeros(numInSeries)
+        mc = np.amax(maxCoefs)
+        for j in range(numInSeries):
+            scores[j] = maxCoefs[j]/mc
+        # Use the scores to identify relevant input series
+        for j in range(numInSeries):
+            if scores[j] >= threshold:
+                depFitted.append((j, int(maxLags[j])))
+    return depFitted
