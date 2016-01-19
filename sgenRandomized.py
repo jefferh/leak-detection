@@ -18,7 +18,7 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
     # transformations of lagged variables of the selected stocks.
 
     # Inputs:
-    # sd = DataFrame containing the stock data
+    # sd = DataFrame containing the stock data obtained from getStockData
     # numGenSeries = number of time series to generate
     # numDataPts = desired number of data points
     # maxLag = maximum lag considered
@@ -27,8 +27,8 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
     # noiseStDev = standard deviation of the Gaussian noise with mean zero
 
     # Outputs:
-    # D = array where the leading columns contain the scaled
-    # stock data, and the remaining columns contain the generated time series data
+    # scaledStocks = array containing the scaled stock data
+    # targets = array where each column corresponds to a generated time series
     # dep = array whose ij-th element is a tuple (k, l) where k is the index of a 
     # stock that was used to generate the i-th series, and l indicates the lag 
     # that was used
@@ -36,12 +36,12 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
     # equation (e.g. y(t) = x(t) + error(t)) used to generate the i-th time series
 
     ## Normalize the stock data
-    sdNorm = np.zeros([numDataPts+maxLag, len(sd.columns)])
-    sdNorm[:,:] = sd.iloc[-(numDataPts+maxLag):,:]
-    sdNorm = preprocessing.scale(sdNorm)
+    scaledStocks = np.zeros([numDataPts+maxLag, len(sd.columns)])
+    scaledStocks[:,:] = sd.iloc[-(numDataPts+maxLag):,:]
+    scaledStocks = preprocessing.scale(scaledStocks)
 
     ## Generate the time series
-    D = sdNorm
+    D = scaledStocks
     dep = []
     funcs = []
     for s in range(numGenSeries):
@@ -53,7 +53,7 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
         ## Get the stock data and put it into the data array dd; the last column
         ## is reserved for the generated time series
         dd = np.zeros([numDataPts+maxLag, J+1])
-        dd[:,:-1] = sdNorm[:,selectedStocks]
+        dd[:,:-1] = scaledStocks[:,selectedStocks]
     
         ## Select the number of summands to use
         M = np.random.choice(range(1, maxSummands+1))
@@ -96,12 +96,13 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
             if m < M-1:
                 outString += " + "
         # Add Gaussian error
-        dd[maxLag:,-1] += noiseStDev * np.random.randn(numDataPts)
-        outString += " + error(t)"
+        # dd[maxLag:,-1] += noiseStDev * np.random.randn(numDataPts)
+        # outString += " + error(t)"
         print outString
         D = np.column_stack((D, dd[:,-1]))
         currentDep = list(set(currentDep))
         currentDep.sort()
         dep.append(currentDep)
         funcs.append(outString)
-    return (D, dep, funcs)
+    targets = D[:,len(sd.columns):]
+    return (scaledStocks, targets, dep, funcs)
