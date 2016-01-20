@@ -96,8 +96,8 @@ def generateSeries(sd, numGenSeries, numDataPts, maxLag, maxSummands, maxFactors
             if m < M-1:
                 outString += " + "
         # Add Gaussian error
-        # dd[maxLag:,-1] += noiseStDev * np.random.randn(numDataPts)
-        # outString += " + error(t)"
+        dd[maxLag:,-1] += noiseStDev * np.random.randn(numDataPts)
+        outString += " + error(t)"
         print outString
         D = np.column_stack((D, dd[:,-1]))
         currentDep = list(set(currentDep))
