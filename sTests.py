@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 from sklearn import preprocessing, linear_model, ensemble
 # import GPy as gp
@@ -89,7 +90,7 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
             if scores[j] >= threshold:
                 dfit.append((j, int(maxLags[j])))
         depFitted.append(dfit)
-    return (depFitted, coefList)
+    return depFitted
 
 def computeF1Score(dep, depFitted):
     # Compute the F1 score for the fitted dependencies.
@@ -107,7 +108,14 @@ def computeF1Score(dep, depFitted):
     # column of outSeries, and l is the relevant lag
 
     # Outputs:
-    # F1_score = 2*(precision*recall)/(precision + recall), where
+    # relSeries = list of sets, where the i-th set contains the indices of the 
+    # actually relevant time series
+    # idSeries = list of sets, where the i-th set contains the indices of the 
+    # time series identified as relevant
+    # F1_scores = array containing the F1 scores associated with each generated 
+    # series
+    # For each series, the F1 score is 2*(precision*recall)/(precision + recall), 
+    # where:
     #    precision = (number of actually relevant series identified)/(total 
     #                number of series identified)
     #    recall = (number of actually relevant series identified)/(total number 
@@ -116,14 +124,32 @@ def computeF1Score(dep, depFitted):
     # Pre-process the inputs
     relSeries = []
     idSeries = []
-    for seriesDep in dep:
+    for series in range(len(dep)):
         rs = []
-        for i in seriesDep:
+        for i in dep[series]:
             rs.append(i[0])
         relSeries.append(set(rs))
-    for seriesDep in depFitted:
+    for series in range(len(depFitted)):
         ids = []
-        for i in seriesDep:
-            ids.append(i[0])
+        if len(depFitted[series])>0:            
+            for i in depFitted[series]:
+                ids.append(i[0])
         idSeries.append(set(ids))
-    return (relSeries, idSeries)
+    # Compute the F1 scores
+    F1_scores = []
+    for series in range(len(idSeries)):
+        numRelId = 0
+        for i in idSeries[series]:
+            if i in relSeries[series]:
+                numRelId += 1
+        if len(idSeries[series])==0:
+            P = np.nan # no relevant series identified
+        else:
+            P = numRelId / len(idSeries[series])
+        R = numRelId / len(relSeries[series])
+        if P==0 and R==0:
+            F1 = 0
+        else:
+            F1 = (2*P*R) / (P + R)
+        F1_scores.append(F1)
+    return (relSeries, idSeries, F1_scores)
