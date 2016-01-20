@@ -38,9 +38,9 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
     # threshold = threshold to use for identifying the relevancy of a time series
     
     # Outputs:
-    # depFitted = array whose ij-th element is a tuple (k, l) where k is the index 
-    # of a column of inSeries that was identified as relevant to the i-th column 
-    # of outSeries, and l is the relevant lag
+    # depFitted = array whose ij-th element is a tuple (k, l) where k is the 
+    # index of a column of inSeries that was identified as relevant to the i-th 
+    # column of outSeries, and l is the relevant lag
 
     depFitted = []
     coefList = []
@@ -90,3 +90,40 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
                 dfit.append((j, int(maxLags[j])))
         depFitted.append(dfit)
     return (depFitted, coefList)
+
+def computeF1Score(dep, depFitted):
+    # Compute the F1 score for the fitted dependencies.
+
+    # Here we're only interested in which time series were identified by the 
+    # fitted model (i.e. we're ignoring the "important" lags indicated by the 
+    # model).
+
+    # Inputs:
+    # dep = array whose ij-th element is a tuple (k, l) where k is the index of a 
+    # stock that was used to generate the i-th series, and l is the lag 
+    # that was used
+    # depFitted = array whose ij-th element is a tuple (k, l) where k is the 
+    # index of a column of inSeries that was identified as relevant to the i-th 
+    # column of outSeries, and l is the relevant lag
+
+    # Outputs:
+    # F1_score = 2*(precision*recall)/(precision + recall), where
+    #    precision = (number of actually relevant series identified)/(total 
+    #                number of series identified)
+    #    recall = (number of actually relevant series identified)/(total number 
+    #             of actually relevant series) 
+
+    # Pre-process the inputs
+    relSeries = []
+    idSeries = []
+    for seriesDep in dep:
+        rs = []
+        for i in seriesDep:
+            rs.append(i[0])
+        relSeries.append(set(rs))
+    for seriesDep in depFitted:
+        ids = []
+        for i in seriesDep:
+            ids.append(i[0])
+        idSeries.append(set(ids))
+    return (relSeries, idSeries)
