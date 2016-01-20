@@ -43,6 +43,7 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
     # of outSeries, and l is the relevant lag
 
     depFitted = []
+    coefList = []
     numInSeries = len(inSeries[0])
     if len(outSeries.shape)==1:
         numOutSeries = 1
@@ -63,20 +64,23 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
             lasso.fit(X_scaled, y)
             for i in range(numInSeries):
                 coefs[i,:] = lasso.coef_[i*maxLag:(i+1)*maxLag]
+            coefList.append(coefs)
         # Get the maximal coefficient, and the corresponding lag, for each input 
         # series
         maxCoefs = np.zeros(numInSeries)
         maxLags = np.zeros(numInSeries)
         for j in range(numInSeries):
-            maxCoefs[j] = np.amax(coefs[j,:])
-            maxLags[j] = np.argsort(coefs[j,:])[-1] + 1
+            maxCoefs[j] = np.amax(np.absolute(coefs[j,:]))
+            maxLags[j] = np.argsort(np.absolute(coefs[j,:]))[-1] + 1
         # Compute the "importance score" for each input series
         scores = np.zeros(numInSeries)
         mc = np.amax(maxCoefs)
         for j in range(numInSeries):
             scores[j] = maxCoefs[j]/mc
         # Use the scores to identify relevant input series
+        dfit = []
         for j in range(numInSeries):
             if scores[j] >= threshold:
-                depFitted.append((j, int(maxLags[j])))
-    return depFitted
+                dfit.append((j, int(maxLags[j])))
+        depFitted.append(dfit)
+    return (depFitted, coefList)
