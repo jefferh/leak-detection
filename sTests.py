@@ -66,6 +66,12 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
             for i in range(numInSeries):
                 coefs[i,:] = lasso.coef_[i*maxLag:(i+1)*maxLag]
             coefList.append(coefs)
+        elif method=='elasticnetcv':
+            elasticnet = linear_model.ElasticNetCV(max_iter=10000)
+            elasticnet.fit(X_scaled, y)
+            for i in range(numInSeries):
+                coefs[i,:] = elasticnet.coef_[i*maxLag:(i+1)*maxLag]
+            coefList.append(coefs)            
         elif method=='gbm':
             gbm = ensemble.GradientBoostingRegressor()
             gbm.fit(X_scaled, y)

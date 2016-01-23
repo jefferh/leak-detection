@@ -13,6 +13,12 @@ depFitted_lasso = st.fitModel(inSeries=scaledStocks, outSeries=genSeries, maxLag
 print "LASSO mean F1-score: " + str(np.nanmean(F1_scores_lasso))
 print "LASSO standard error of mean F1-score: " + str(np.nanstd(F1_scores_lasso)/np.count_nonzero(~np.isnan(F1_scores_lasso)))
 
+# Evaluate Elastic Net
+depFitted_elasticnet = st.fitModel(inSeries=scaledStocks, outSeries=genSeries, maxLag=20, method='elasticnetcv', threshold=0.2)
+(relSeries, idSeries_elasticnet, F1_scores_elasticnet) = st.computeF1Score(dep, depFitted_elasticnet)
+print "Elastic Net F1-score: " + str(np.nanmean(F1_scores_elasticnet))
+print "Elastic Net standard error of mean F1-score: " + str(np.nanstd(F1_scores_elasticnet)/np.count_nonzero(~np.isnan(F1_scores_elasticnet)))
+
 # Evaluate GBM
 depFitted_gbm = st.fitModel(inSeries=scaledStocks, outSeries=genSeries, maxLag=20, method='gbm', threshold=0.2)
 (relSeries, idSeries_gbm, F1_scores_gbm) = st.computeF1Score(dep, depFitted_gbm)
