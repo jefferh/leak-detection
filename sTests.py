@@ -78,6 +78,12 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
             for i in range(numInSeries):
                 coefs[i,:] = gbm.feature_importances_[i*maxLag:(i+1)*maxLag]
             coefList.append(coefs)
+        elif method=='gbmhuber':
+            gbmhuber = ensemble.GradientBoostingRegressor(loss='huber')
+            gbmhuber.fit(X_scaled, y)
+            for i in range(numInSeries):
+                coefs[i,:] = gbmhuber.feature_importances_[i*maxLag:(i+1)*maxLag]
+            coefList.append(coefs)            
         # Get the maximal coefficient, and the corresponding lag, for each input 
         # series
         maxCoefs = np.zeros(numInSeries)
