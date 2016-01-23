@@ -34,4 +34,10 @@ depFitted_gbmhuber = st.fitModel(inSeries=scaledStocks, outSeries=genSeries, max
 print "GBM w/ Huber Loss mean F1-score: " + str(np.nanmean(F1_scores_gbmhuber))
 print "GBM w/ Huber Loss standard error of mean F1-score: " + str(np.nanstd(F1_scores_gbmhuber)/np.count_nonzero(~np.isnan(F1_scores_gbmhuber)))
 
+# Evaluate Random Forest
+depFitted_randomforest = st.fitModel(inSeries=scaledStocks, outSeries=genSeries, maxLag=20, method='randomforest', threshold=0.2)
+(relSeries, idSeries_randomforest, F1_scores_randomforest) = st.computeF1Score(dep, depFitted_randomforest)
+print "Random Forest mean F1-score: " + str(np.nanmean(F1_scores_randomforest))
+print "Random Forest standard error of mean F1-score: " + str(np.nanstd(F1_scores_randomforest)/np.count_nonzero(~np.isnan(F1_scores_randomforest)))
+
 print("Time elapsed: %s seconds" % (time.time() - start_time))
