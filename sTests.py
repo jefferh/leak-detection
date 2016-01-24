@@ -1,7 +1,7 @@
 from __future__ import division
 import numpy as np
 from sklearn import preprocessing, linear_model, ensemble
-# import GPy as gp
+import GPy as gp
 import sgenRandomized as sgr
 
 def genRegInput(inSeries, maxLag):
@@ -89,6 +89,14 @@ def fitModel(inSeries, outSeries, maxLag, method, threshold):
             randomforest.fit(X_scaled, y)
             for i in range(numInSeries):
                 coefs[i,:] = randomforest.feature_importances_[i*maxLag:(i+1)*maxLag]
+            coefList.append(coefs)
+        elif method=='gaussianprocessARD':
+            ARDkernel = gp.kern.RBF(input_dim=X.shape[1], variance=1., lengthscale=1., ARD=True)
+            y = np.array(np.matrix(y).T)
+            m = gp.models.GPRegression(X_scaled, y, ARDkernel)
+            m.optimize()
+            for i in range(numInSeries):
+                coefs[i,:] = 1./m.parameters[1]['lengthscale'][i*maxLag:(i+1)*maxLag]
             coefList.append(coefs)            
         # Get the maximal coefficient, and the corresponding lag, for each input 
         # series
