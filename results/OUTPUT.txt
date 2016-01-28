@@ -1,0 +1,72 @@
+jefferh:leak-detection jhuang$ python test.py
+Selected Stocks:  [3]
+y(t) = 4cos(x_3(t-16))log(|x_3(t-8)|) + 3sin(x_3(t-6))sin(x_3(t-12)) + 4log(|x_3(t-11)|) + error(t)
+Selected Stocks:  [9]
+y(t) = 1log(|x_9(t-4)|)cos(x_9(t-7)) + 1log(|x_9(t-18)|)x_9(t-18)sin(x_9(t-14)) + error(t)
+Selected Stocks:  [0 1 2 3 5 6 7 8 9]
+y(t) = 2x_2(t-12) + error(t)
+Selected Stocks:  [0 2 3 4 5 6 7 8 9]
+y(t) = 3log(|x_0(t-7)|)log(|x_6(t-15)|)x_9(t-13) + 4x_8(t-12)x_7(t-9) + 3cos(x_0(t-17)) + error(t)
+Selected Stocks:  [0 1 4 6 9]
+y(t) = 3x_9(t-20)x_0(t-5)cos(x_6(t-12)) + 4sin(x_1(t-10)) + error(t)
+Selected Stocks:  [0 3 7 8 9]
+y(t) = 1x_9(t-4)^2log(|x_0(t-14)|)x_9(t-12)^2 + error(t)
+Selected Stocks:  [3 4]
+y(t) = 2x_3(t-5)^2 + 1x_3(t-10)sin(x_4(t-10)) + error(t)
+Selected Stocks:  [4 8]
+y(t) = 3cos(x_8(t-12))x_8(t-15)log(|x_8(t-16)|) + 2cos(x_4(t-19)) + 4cos(x_8(t-20))cos(x_8(t-9)) + error(t)
+Selected Stocks:  [1 4 5 8]
+y(t) = 4x_8(t-9)cos(x_4(t-13)) + 1x_4(t-13)x_4(t-5)cos(x_8(t-14)) + 4x_4(t-10)^2 + error(t)
+Selected Stocks:  [0 1 4 8 9]
+y(t) = 3x_4(t-15)log(|x_4(t-14)|)x_8(t-2) + 4cos(x_1(t-4)) + error(t)
+Selected Stocks:  [5 7]
+y(t) = 2x_5(t-10)x_7(t-6)^2x_7(t-8) + error(t)
+Selected Stocks:  [2 3 8 9]
+y(t) = 4x_3(t-19)^2x_9(t-15)^2 + 3x_3(t-5)cos(x_3(t-7)) + error(t)
+Selected Stocks:  [1 6]
+y(t) = 1log(|x_6(t-5)|)log(|x_6(t-18)|)x_6(t-20)^2 + 4x_1(t-9)^2x_6(t-9) + 4x_6(t-2)^2cos(x_6(t-2)) + error(t)
+Selected Stocks:  [0 2 3 7 8]
+y(t) = 4x_2(t-20)^2sin(x_3(t-11)) + 1x_7(t-14) + 1sin(x_0(t-17)) + error(t)
+Selected Stocks:  [0 1 2 5 6 7 9]
+y(t) = 4x_7(t-14)^2 + error(t)
+Selected Stocks:  [0 1 2 3 4 5 6 8 9]
+y(t) = 4sin(x_8(t-12))cos(x_5(t-2)) + 2cos(x_2(t-11)) + 3x_9(t-20) + error(t)
+Selected Stocks:  [6 9]
+y(t) = 3cos(x_9(t-10))sin(x_6(t-13))x_9(t-9) + 4log(|x_9(t-14)|)x_6(t-6) + 4cos(x_6(t-2))log(|x_6(t-15)|)cos(x_6(t-7)) + error(t)
+Selected Stocks:  [0 1 2 3 4 5 6 7 8 9]
+y(t) = 1log(|x_5(t-13)|) + 4x_0(t-7)^2 + error(t)
+Selected Stocks:  [0 1 8]
+y(t) = 3cos(x_1(t-17))x_0(t-1)^2sin(x_8(t-10)) + 3sin(x_8(t-9))x_0(t-6)^2x_8(t-13) + error(t)
+Selected Stocks:  [0 2 3 4 5 6 8 9]
+y(t) = 1cos(x_9(t-5))sin(x_0(t-4)) + 2x_0(t-3) + 1cos(x_6(t-13)) + error(t)
+=================================
+Time to generate data: 1.88257694244 seconds
+=================================
+Time to write data to file: 0.00455784797668 seconds
+=================================
+Time to read data from file: 0.00205206871033 seconds
+ /Users/jhuang/anaconda/lib/python2.7/site-packages/sklearn/linear_model/base.py:424: FutureWarning:elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+=================================
+LASSO mean F1-score: 0.37074829932
+LASSO standard error of mean F1-score: 0.0228144330682
+Time elapsed: 30.2940869331 seconds
+=================================
+Elastic Net F1-score: 0.387940630798
+Elastic Net standard error of mean F1-score: 0.021812175175
+Time elapsed: 66.0216481686 seconds
+=================================
+GBM mean F1-score: 0.729292929293
+GBM standard error of mean F1-score: 0.0111958089547
+Time elapsed: 96.7875258923 seconds
+=================================
+GBM w/ Huber Loss mean F1-score: 0.690476190476
+GBM w/ Huber Loss standard error of mean F1-score: 0.0091448410546
+Time elapsed: 98.0587308407 seconds
+=================================
+Random Forest mean F1-score: 0.590238095238
+Random Forest standard error of mean F1-score: 0.0094134905245
+Time elapsed: 43.9439477921 seconds
+=================================
+Gaussian Process w/ ARD mean F1-score: 0.614199134199
+Gaussian Process w/ ARD standard error of mean F1-score: 0.0129929490602
+Time elapsed: 19047.372921 seconds
